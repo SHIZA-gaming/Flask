@@ -14,10 +14,12 @@ app.config.from_object(__name__)
 
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'flsite.db')))
 
+
 def connect_db():
     conn = sqlite3.connect(app.config['DATABASE'])
     conn.row_factory = sqlite3.Row
     return conn
+
 
 def create_db():
 #Вспомогательная функция для создания таблицы Базы Данных
@@ -27,18 +29,23 @@ def create_db():
     db.commit()
     db.close()
 
+
 def get_db():
 #Соединение с Базой Данных, елси оно еще не установлено
     if not hasattr(g, 'link_db'):
         g.link_db = connect_db()
     return g.link_db
 
+
 app.config['SECRET_KEY'] = 'jknlkmvlfndfjvbdhvhggv'
 
-menuApp = [{'name': 'Установка', 'url': 'install-flask'},
+menuApp = [{'name': 'Главная', 'url': 'index'},
+           {'name': 'Добавить статью', 'url': 'addPost'},
+           {'name': 'Установка', 'url': 'install-flask'},
            {'name': 'Первое приложение', 'url': 'first-app'},
            {'name': 'Обратная связь', 'url': 'contact'},
            {'name': 'Вход', 'url': 'login'}]
+
 
 @app.teardown_appcontext
 def close_db(error):
@@ -46,13 +53,15 @@ def close_db(error):
     if hasattr(g, 'link_db'):
         g.link_db.close()
 
+
 @app.route("/")
 def index():
     db = get_db()
     dbase = FDataBase(db)
-    return render_template('index.html', menu=dbase.getMenu())
+    return render_template('index.html', menu=dbase.getMenu(), posts=dbase.getPostsAnonce())
 
-@app.route("/add_post", methods=["POST","GET"])
+
+@app.route("/add_post", methods=["POST", "GET"])
 def addPost():
     db = get_db()
     dbase = FDataBase(db)
@@ -67,6 +76,17 @@ def addPost():
         else:
             flash('Ошибка добавления статьи', category='error')
     return render_template('add_post.html', menu=dbase.getMenu(), title="Добавление статьи")
+
+
+@app.route("/post/<int:id_post>")
+def showPost(id_post):
+    db = get_db()
+    dbase = FDataBase(db)
+    title, post = dbase.getPost(id_post)
+    if not title:
+        abort(404)
+
+    return render_template('post.html', menu=dbase.getMenu(), title=title, post=post)
 
 
 #
@@ -113,8 +133,6 @@ def addPost():
 #     print(url_for('about'))
 #     print(url_for('profile', username="selfedu"))
 
-
-
-
-if __name__=="__main__":
+if __name__ == "__main__":
     app.run(debug=True)
+

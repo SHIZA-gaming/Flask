@@ -21,7 +21,7 @@ a: hover{
 ul.mainmenu {
     list-style: none;
     background: #3F4137;
-    heigh: 60px;
+    height: 60px;
     margin:0;
     padding: 0;
     color: #fdc073;
@@ -36,7 +36,7 @@ ul.mainmenu li a {
     text-decoration: none;
 }
 
-ul.maimenu li a:hover {
+ul.mainmenu li a:hover {
     color: #FDA83D;
 }
 
@@ -63,4 +63,26 @@ div.content {
 .flash.error {
     border: 1px solid #FF4343;
     background: #FF9C9C;
+}
+
+ul.list-posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 600px;
+}
+
+ul.list-posts li {
+    margin: 20px 0 0 0;
+    border: 1px solid #eee;
+}
+
+ul.list-posts .title {
+    margin: 0;
+    padding: 5px;
+    background: #eee;
+}
+ul.list-posts .annonce {
+    margin: 0;
+    padding: 10px 5px 10px 5px;
 }
